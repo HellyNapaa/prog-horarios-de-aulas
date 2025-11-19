@@ -1,0 +1,20 @@
+professores = {
+    '1': 'Ana Carolina Pereira de Souza',
+    '2': 'Bruno Leonardo Rodrigues de Almeida',
+    '3': 'Carlos Eduardo da Silva',
+    '4': 'Daniel de Souza Costa',
+    '5': 'Eduardo Mendes de Oliveira',
+    '6': 'Fernanda Lima dos Santos',
+    '7': 'Gabriel Ferreira da Rocha',
+    '8': 'Helena Maria de Araújo',
+    '9': 'Igor Santos de Lima',
+    '10': 'João Pedro Almeida',
+    '11': 'Kátia Regina dos Reis',
+    '12': 'Lucas Fernandes da Silva',
+    '13': 'Mariana Oliveira de Souza',
+    '14': 'Natália Costa de Almeida',
+    '15': 'Otávio Henrique dos Santos',
+    '16': 'Paula Regina de Carvalho',
+    '17': 'Rafael Gomes de Lima',
+    '18': 'Sofia Mendes de Araújo'
+}
