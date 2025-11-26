@@ -3,7 +3,6 @@ from typing import List, Optional, Tuple
 
 class UserInterface:
 
-
     @staticmethod
     def prompt_filters() -> Tuple[Optional[List[int]],
                                    Optional[List[int]],
@@ -13,40 +12,17 @@ class UserInterface:
         periodos: Optional[List[int]] = None
         cursos: Optional[List[str]] = None
 
-        print("\n" + "=" * 60)
-        print("         CONFIGURAÇÃO DE FILTRO")
-        print("=" * 60)
+        print("\n Gerar carga horária de qual semestre? (1 ou 2)")
+        escolha = input(" ➤ Digite: ").strip()
 
-        print("\n[1/3] Filtrar por SEMESTRE? (s/n)")
-        if input().strip().lower() == 's':
-            print("    Qual semestre? (1, 2 ou ambos separados por vírgula)")
-            try:
-                semestres = [int(s.strip()) for s in input().strip().split(",")]
-                print(f"    ✓ Semestres selecionados: {semestres}")
-            except ValueError:
-                print("    ✗ Entrada inválida. Ignorando filtro de semestre.")
-                semestres = None
+        if escolha == "1":
+            semestres = [1]
+        elif escolha == "2":
+            semestres = [2]
+        else:
+            print(" Insira um semestre válido (1 ou 2).")
+            return UserInterface.prompt_filters()  # pede de novo
 
-        print("\n[2/3] Filtrar por PERÍODO? (s/n)")
-        if input().strip().lower() == 's':
-            print("    Qual período? (ex: 1,2 ou 5 para só o quinto)")
-            try:
-                periodos = [int(p.strip()) for p in input().strip().split(",")]
-                print(f"    ✓ Períodos selecionados: {periodos}")
-            except ValueError:
-                print("    ✗ Entrada inválida. Ignorando filtro de período.")
-                periodos = None
-
-        print("\n[3/3] Filtrar por CURSO? (s/n)")
-        if input().strip().lower() == 's':
-            print("    Qual curso? (ex: CCO ou SIN; vários: CCO,SIN)")
-            try:
-                cursos = [c.strip().upper() for c in input().strip().split(",")]
-                print(f"    ✓ Cursos selecionados: {cursos}")
-            except ValueError:
-                print("    ✗ Entrada inválida. Ignorando filtro de curso.")
-                cursos = None
-        print()
         return semestres, periodos, cursos
 
     @staticmethod
@@ -62,9 +38,9 @@ class UserInterface:
 
     @staticmethod
     def print_summary(num_disciplinas: int,
-                     num_professores: int,
-                     num_salas: int,
-                     num_slots: int) -> None:
+                      num_professores: int,
+                      num_salas: int,
+                      num_slots: int) -> None:
         print("\n" + "=" * 60)
         print("         SUMÁRIO DE DADOS CARREGADOS")
         print("=" * 60)

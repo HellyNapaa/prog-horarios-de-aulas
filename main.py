@@ -1,7 +1,7 @@
 import sys
 from typing import List, Optional
 
-# Importações de módulos internos
+
 from config import SEMANA, HORARIOS, HORARIOS_NOTURNOS
 from models import Disciplina, Professor, Sala, Slot
 from data_processor import DataProcessor
@@ -76,6 +76,7 @@ def main():
             f"Grafo com {graph.number_of_nodes()} nós e {graph.number_of_edges()} arestas",
             level="success"
         )
+        OutputFormatter.generate_graph_pdf(graph, "graph_visualization.pdf")
 
         print("\n🎯 Gerando candidatos...")
         try:
@@ -100,14 +101,19 @@ def main():
             level="success"
         )
 
-        print("\n🔬 Resolvendo com backtracking + MRV...")
+        print("\n🔬 Resolvendo com backtracking + MRV (Otimizado)...")
         solver = ConflictGraphSolver(
             graph_builder.candidatos_por_parte,
             graph_builder.candidate_info,
-            conflict_graph
+            conflict_graph,
+            graph_builder.get_graph()
         )
 
+        found = solver.solve(verbose=True, time_limit=30)
+
+        print("\n🚦 Iniciando processo de busca...")
         found = solver.solve(verbose=True)
+        print("\n✅ Processo de busca concluído.")
 
         if not found:
             UserInterface.print_info(
@@ -119,6 +125,9 @@ def main():
 
         print("\n📋 Decodificando solução...")
         resultado = solver.get_solution()
+        print("\n📊 Gerando imagem do grafo da solução...")
+        OutputFormatter.generate_solution_graph_image(resultado, "solution_graph.png")
+        print("\n🖨️  Formatando resultados para saída...")
 
         if not resultado:
             UserInterface.print_info("Solução vazia", level="error")
@@ -130,12 +139,14 @@ def main():
         )
         print("\n📊 Exibindo resultados...")
         OutputFormatter.print_terminal(resultado, graph)
+        print("\n📦 Gerando arquivo PDF com a solução...")
 
         OutputFormatter.generate_pdf(resultado, graph)
         UserInterface.print_info(
             "✨ Agendamento concluído com sucesso!",
             level="success"
         )
+        print("\n✨ Agendamento concluído com sucesso!")
 
     except Exception as e:
         UserInterface.print_info(f"Erro inesperado: {str(e)}", level="error")

@@ -6,3 +6,8 @@ for materia in materias:
         materia['tipo'] = 'optativa'
     else:
         materia['tipo'] = 'obrigatoria'
+
+
+for materia in materias:
+    if materia['periodo'] is not None:
+        materia['nome'] = f"{materia['periodo']}º Período - {materia['nome']} - Tipo: {materia['tipo']} - curso: {materia['curso']}"

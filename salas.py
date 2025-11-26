@@ -13,16 +13,5 @@ salas = {
     'L212': 'Laboratório de Informática L212',
     'M313': 'Laboratório de Informática M313',
     'N414': 'Laboratório de Informática N414',
-    'O515': 'Laboratório de Informática O515',
-    'P616': 'Laboratório de Informática P616',
-    'Q717': 'Laboratório de Informática Q717',
-    'R818': 'Laboratório de Informática R818',
-    'S919': 'Laboratório de Informática S919',
-    'T020': 'Laboratório de Informática T020',
-    'U121': 'Laboratório de Informática U121',
-    'V222': 'Laboratório de Informática V222',
-    'W323': 'Laboratório de Informática W323',
-    'X424': 'Laboratório de Informática X424',
-    'Y525': 'Laboratório de Informática Y525',
-    'Z626': 'Laboratório de Informática Z626',
+    'O515': 'Laboratório de Informática O515'
 }
