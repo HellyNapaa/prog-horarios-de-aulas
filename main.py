@@ -148,6 +148,12 @@ def main():
         )
         print("\n✨ Agendamento concluído com sucesso!")
 
+        OutputFormatter.generate_teacher_workload_pdf(resultado, graph)
+        UserInterface.print_info(
+            "✨ PDF de Carga Horária dos Professores gerado com sucesso!",
+            level="success"
+        )
+
     except Exception as e:
         UserInterface.print_info(f"Erro inesperado: {str(e)}", level="error")
         import traceback

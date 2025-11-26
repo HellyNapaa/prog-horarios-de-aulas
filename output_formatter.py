@@ -66,15 +66,15 @@ class OutputFormatter:
         elements = []
         styles = getSampleStyleSheet()
 
-        # Título
+
         elements.append(Paragraph("Grade Horária (Timetable)", styles["Title"]))
         elements.append(Spacer(1, 20))
 
-        # Estilos
+
         text_normal = ParagraphStyle("normal", fontSize=6, leading=7)
         text_bold = ParagraphStyle("bold", fontSize=7, leading=8, fontName="Helvetica-Bold")
 
-        # Organizar timetable
+
         timetable: Dict[str, Dict[str, List[str]]] = {}
 
         for d_node, p_node, s_node, h_node in resultado:
@@ -99,7 +99,7 @@ class OutputFormatter:
 
         horarios_ordenados = sorted(timetable.keys())
 
-        # Criar tabela
+
         data = [["Horário"] + DIAS_ORDENADOS]
 
         for hora in horarios_ordenados:
@@ -136,7 +136,7 @@ class OutputFormatter:
 
         print("\nGerando imagem e PDF do grafo...")
 
-        # 1. Salvar imagem PNG
+
         img_path = "graph_temp_image.png"
 
         plt.figure(figsize=(20, 12))
@@ -150,7 +150,6 @@ class OutputFormatter:
         plt.savefig(img_path, dpi=200, bbox_inches="tight")
         plt.close()
 
-        # 2. Criar PDF com redimensionamento automático
         doc = SimpleDocTemplate(filename, pagesize=landscape(A4))
         elements = []
         styles = getSampleStyleSheet()
@@ -158,14 +157,14 @@ class OutputFormatter:
         elements.append(Paragraph("Visualização do Grafo", styles["Title"]))
         elements.append(Spacer(1, 20))
 
-        # Tamanho máximo dentro da página
+
         max_width = 750
         max_height = 430
 
         from reportlab.platypus import Image
         img = Image(img_path)
 
-        # Reduzir automaticamente a imagem se necessário
+
         if img.drawWidth > max_width:
             scale = max_width / img.drawWidth
             img.drawWidth = max_width
@@ -181,6 +180,79 @@ class OutputFormatter:
         doc.build(elements)
 
         print(f"✓ PDF do grafo gerado com sucesso: {filename}")
+
+    @staticmethod
+    def generate_teacher_workload_pdf(
+        resultado: List[Tuple],
+        graph: nx.MultiGraph,
+        filename: str = "carga_horaria_professores.pdf"
+    ) -> None:
+        print(f"\nGerando PDF de Carga Horária: {filename}...")
+
+        workload = {}
+        dias_validos = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta"]
+
+        for d_node, p_node, s_node, h_node in resultado:
+            p_info = graph.nodes[p_node]
+            h_info = graph.nodes[h_node]
+            d_info = graph.nodes[d_node]
+
+            prof_nome = p_info['nome']
+            dia = h_info['dia']
+            carga = d_info.get('carga', 2)
+
+            if prof_nome not in workload:
+                workload[prof_nome] = {d: 0 for d in dias_validos}
+                workload[prof_nome]['Total'] = 0
+
+            if dia in dias_validos:
+                workload[prof_nome][dia] += carga
+                workload[prof_nome]['Total'] += carga
+
+
+        professores_ordenados = sorted(workload.keys())
+
+        doc = SimpleDocTemplate(filename, pagesize=A4)
+        elements = []
+        styles = getSampleStyleSheet()
+
+
+        elements.append(Paragraph("Carga Horária Semanal por Professor", styles["Title"]))
+        elements.append(Spacer(1, 20))
+
+
+        headers = ["Professor"] + dias_validos + ["Total"]
+        data = [headers]
+
+        for prof in professores_ordenados:
+            row = [prof]
+            for dia in dias_validos:
+                horas = workload[prof].get(dia, 0)
+                row.append(str(horas) if horas > 0 else "-")
+            row.append(str(workload[prof]['Total']))
+            data.append(row)
+
+
+        col_widths = [140] + [50] * 5 + [50]
+
+        t = Table(data, colWidths=col_widths, repeatRows=1)
+
+        t.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.darkblue),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('ALIGN', (0, 1), (0, -1), 'LEFT'),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 0), (-1, -1), 9),
+            ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+            ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+            ('GRID', (0, 0), (-1, -1), 1, colors.black),
+            ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.whitesmoke, colors.beige])
+        ]))
+
+        elements.append(t)
+        doc.build(elements)
+        print(f"✓ PDF de carga horária gerado: {filename}")
 
 
 
